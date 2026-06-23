@@ -1,35 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asansol Institute of Engineering - Certificate Verification</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script>
-const SUPABASE_URL = "PASTE_YOUR_PROJECT_URL_HERE";
-const SUPABASE_KEY = "PASTE_YOUR_PUBLISHABLE_KEY_HERE";
+<style>
+body{
+font-family:Arial,sans-serif;
+background:#f4f4f4;
+margin:0;
+padding:20px;
+}
 
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
+.container{
+max-width:700px;
+margin:auto;
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h1{
+text-align:center;
+color:#003366;
+}
+
+.subtitle{
+text-align:center;
+color:#666;
+margin-bottom:20px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:10px;
+box-sizing:border-box;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:10px;
+background:#003366;
+color:white;
+border:none;
+cursor:pointer;
+font-size:16px;
+}
+
+.hidden{
+display:none;
+}
+
+.card{
+margin-top:20px;
+padding:20px;
+border:1px solid #ddd;
+border-radius:10px;
+background:#fafafa;
+}
+
+.photo{
+width:120px;
+height:120px;
+object-fit:cover;
+border-radius:50%;
+display:block;
+margin:auto;
+margin-bottom:15px;
+}
+
+.verified{
+background:green;
+color:white;
+padding:10px;
+text-align:center;
+font-weight:bold;
+margin-bottom:15px;
+}
+
+.error{
+background:red;
+color:white;
+padding:10px;
+text-align:center;
+margin-top:15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>ASANSOL INSTITUTE OF ENGINEERING</h1>
+<p class="subtitle">Certificate Verification Portal</p>
+
+<input
+type="text"
+id="certId"
+placeholder="Enter Certificate Number">
+
+<button onclick="verifyCertificate()">
+Verify Certificate
+</button>
+
+<div id="errorMsg" class="error hidden">
+Certificate Not Found
+</div>
+
+<div id="resultCard" class="card hidden">
+
+<div class="verified">
+✓ VERIFIED CERTIFICATE
+</div>
+
+<img id="studentPhoto" class="photo" src="">
+
+<p><strong>Name:</strong> <span id="studentName"></span></p>
+<p><strong>Certificate No:</strong> <span id="certNo"></span></p>
+<p><strong>Course:</strong> <span id="courseName"></span></p>
+<p><strong>Grade:</strong> <span id="grade"></span></p>
+<p><strong>Date of Issue:</strong> <span id="issueDate"></span></p>
+
+</div>
+
+</div>
+
+<script>
+
+const SUPABASE_URL =
+"https://ybybtvbudaulkgbndmap.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_ZRbQoWrF7uATPIZeHZl6pA_Wc9Xcz-Q";
+
+const supabaseClient =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
 );
 
-async function verifyCertificate() {
+async function verifyCertificate(){
 
-  alert("Function started");
+const certId =
+document.getElementById("certId").value.trim();
 
-  try {
+const resultCard =
+document.getElementById("resultCard");
 
-    const { data, error } = await supabaseClient
-      .from("certificates")
-      .select("*")
-      .eq("id", "AIE-2026-001")
-      .single();
+const errorMsg =
+document.getElementById("errorMsg");
 
-    if (error) {
-      alert("Supabase Error: " + error.message);
-      return;
-    }
+resultCard.classList.add("hidden");
+errorMsg.classList.add("hidden");
 
-    alert("Found Student: " + data.student_name);
-
-  } catch (err) {
-    alert("JavaScript Error: " + err.message);
-  }
+if(!certId){
+alert("Please enter certificate number");
+return;
 }
+
+const { data, error } =
+await supabaseClient
+.from("certificates")
+.select("*")
+.eq("id", certId)
+.single();
+
+if(error || !data){
+errorMsg.classList.remove("hidden");
+return;
+}
+
+document.getElementById("studentPhoto").src =
+data.photo_url || "";
+
+document.getElementById("studentName").innerText =
+data.student_name || "";
+
+document.getElementById("certNo").innerText =
+data.id || "";
+
+document.getElementById("courseName").innerText =
+data.course_name || "";
+
+document.getElementById("grade").innerText =
+data.grade || "";
+
+document.getElementById("issueDate").innerText =
+data.date_of_issue || "";
+
+resultCard.classList.remove("hidden");
+
+}
+
 </script>
+
+</body>
+</html>

@@ -37,12 +37,9 @@
                 <div class="mb-4 flex justify-center">
                     <img id="studentPhoto" src="" alt="Student Photo" class="h-28 w-28 rounded-full object-cover border-4 border-slate-100 shadow-md hidden">
                 </div>
-
                 <h2 id="studentName" class="text-2xl font-black text-slate-900 mb-1">---</h2>
                 <p id="certIdDisplay" class="text-xs font-mono bg-slate-100 text-slate-600 inline-block px-2 py-1 rounded font-bold mb-4">---</p>
-                
                 <hr class="border-slate-100 my-4">
-                
                 <div class="grid grid-cols-2 gap-4 text-left text-sm">
                     <div>
                         <span class="block text-slate-400 text-xs font-bold uppercase tracking-wider">Course / Stream</span>
@@ -64,18 +61,19 @@
     <script>
         const SUPABASE_URL = "https://ybbytbvbudasulkgbndmap.supabase.co"; 
         const SUPABASE_KEY = "sb_publishable_ZRbQoWrF7uATPIZeHZl6pA_Wc9Xcz-Q";
-
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        function verifyCertificate() {
+        async function verifyCertificate() {
             const id = document.getElementById('certId').value.trim();
-            if(id) fetchData(id);
-        }
+            const errorMsg = document.getElementById('errorMsg');
+            const resultCard = document.getElementById('resultCard');
+            const studentPhoto = document.getElementById('studentPhoto');
 
-        async function fetchData(id) {
-            document.getElementById('errorMsg').classList.add('hidden');
-            document.getElementById('resultCard').classList.add('hidden');
-            document.getElementById('studentPhoto').classList.add('hidden');
+            errorMsg.classList.add('hidden');
+            resultCard.classList.add('hidden');
+            studentPhoto.classList.add('hidden');
+
+            if(!id) return;
 
             const { data, error } = await supabase
                 .from('certificates')
@@ -84,7 +82,7 @@
                 .single();
 
             if (error || !data) {
-                document.getElementById('errorMsg').classList.remove('hidden');
+                errorMsg.classList.remove('hidden');
                 return;
             }
 
@@ -94,12 +92,10 @@
             document.getElementById('grade').innerText = data.grade || "N/A"; 
 
             if (data.photo_url) {
-                const imgElement = document.getElementById('studentPhoto');
-                imgElement.src = data.photo_url;
-                imgElement.classList.remove('hidden');
+                studentPhoto.src = data.photo_url;
+                studentPhoto.classList.remove('hidden');
             }
-
-            document.getElementById('resultCard').classList.remove('hidden');
+            resultCard.classList.remove('hidden');
         }
     </script>
 </body>

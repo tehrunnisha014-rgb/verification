@@ -93,7 +93,6 @@
             document.getElementById('courseName').innerText = data.course_name || "N/A"; 
             document.getElementById('grade').innerText = data.grade || "N/A"; 
 
-            // Renders the image if a valid URL is provided inside Supabase
             if (data.photo_url) {
                 const imgElement = document.getElementById('studentPhoto');
                 imgElement.src = data.photo_url;

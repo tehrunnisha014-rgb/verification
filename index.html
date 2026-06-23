@@ -1,99 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asansol Institute of Engineering - Certificate Verification</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certificate Verification</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body{
+font-family:Arial,sans-serif;
+background:#f4f4f4;
+margin:0;
+padding:20px;
+}
+
+.container{
+max-width:700px;
+margin:auto;
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h1{
+text-align:center;
+color:#003366;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:10px;
+box-sizing:border-box;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:10px;
+background:#003366;
+color:white;
+border:none;
+cursor:pointer;
+font-size:16px;
+}
+
+button:hover{
+background:#0055aa;
+}
+
+.hidden{
+display:none;
+}
+
+.card{
+margin-top:20px;
+padding:20px;
+border:1px solid #ddd;
+border-radius:10px;
+background:#fafafa;
+}
+
+.photo{
+width:120px;
+height:120px;
+object-fit:cover;
+border-radius:50%;
+display:block;
+margin:auto;
+margin-bottom:15px;
+}
+
+.verified{
+background:green;
+color:white;
+padding:10px;
+text-align:center;
+font-weight:bold;
+margin-bottom:15px;
+}
+
+.error{
+background:red;
+color:white;
+padding:10px;
+text-align:center;
+margin-top:15px;
+}
+</style>
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col justify-between">
 
-    <header class="bg-white shadow-md border-t-4 border-red-500 py-6 text-center">
-        <div class="max-w-md mx-auto px-4 flex flex-col items-center gap-3">
-            <h1 class="text-xl font-black text-slate-800 tracking-wide uppercase">Asansol Institute of Engineering</h1>
-            <p class="text-xs font-bold text-blue-600 tracking-wider uppercase mt-1">Certificate Verification Portal</p>
-        </div>
-    </header>
+<body>
 
-    <main class="flex-grow max-w-md w-full mx-auto p-6">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-6">
-            <label for="certId" class="block text-sm font-semibold text-slate-600 mb-2">Enter Certificate Number</label>
-            <div class="flex gap-2">
-                <input type="text" id="certId" placeholder="e.g., AIE-2026-001" class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 font-mono">
-                <button type="button" onclick="verifyCertificate()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-lg cursor-pointer transition-colors">Verify</button>
-            </div>
-            <p id="errorMsg" class="text-red-500 text-sm mt-3 hidden font-medium">⚠️ Certificate number not recognized.</p>
-        </div>
+<div class="container">
 
-        <div id="resultCard" class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hidden">
-            <div class="bg-red-500 px-6 py-4 text-white text-center font-bold tracking-wider text-sm">✓ VERIFIED OFFICIAL DOCUMENT</div>
-            <div class="p-6 text-center">
-                <div class="mb-4 flex justify-center">
-                    <img id="studentPhoto" src="" alt="Student Photo" class="h-28 w-28 rounded-full object-cover border-4 border-slate-100 shadow-md hidden">
-                </div>
-                <h2 id="studentName" class="text-2xl font-black text-slate-900 mb-1">---</h2>
-                <p id="certIdDisplay" class="text-xs font-mono bg-slate-100 text-slate-600 inline-block px-2 py-1 rounded font-bold mb-4">---</p>
-                <hr class="border-slate-100 my-4">
-                <div class="grid grid-cols-2 gap-4 text-left text-sm">
-                    <div>
-                        <span class="block text-slate-400 text-xs font-bold uppercase tracking-wider">Course / Stream</span>
-                        <span id="courseName" class="font-bold text-slate-800 text-base">---</span>
-                    </div>
-                    <div>
-                        <span class="block text-slate-400 text-xs font-bold uppercase tracking-wider">Grade / Div</span>
-                        <span id="grade" class="font-black text-blue-600 text-base">---</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+<h1>Asansol Institute of Engineering</h1>
+<h3 style="text-align:center;">Certificate Verification Portal</h3>
 
-    <script>
-        const SUPABASE_URL = "https://ybbytbvbudasulkgbndmap.supabase.co"; 
-        const SUPABASE_KEY = "sb_publishable_ZRbQoWrF7uATPIZeHZl6pA_Wc9Xcz-Q";
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+<input
+type="text"
+id="certId"
+placeholder="Enter Certificate Number">
 
-        async function verifyCertificate() {
-            const id = document.getElementById('certId').value.trim();
-            const errorMsg = document.getElementById('errorMsg');
-            const resultCard = document.getElementById('resultCard');
-            const studentPhoto = document.getElementById('studentPhoto');
+<button onclick="verifyCertificate()">
+Verify Certificate
+</button>
 
-            errorMsg.classList.add('hidden');
-            resultCard.classList.add('hidden');
-            studentPhoto.classList.add('hidden');
+<div id="errorMsg" class="error hidden">
+Certificate not found.
+</div>
 
-            if(!id) return;
+<div id="resultCard" class="card hidden">
 
-            try {
-                const { data, error } = await supabase
-                    .from('certificates')
-                    .select('*')
-                    .eq('id', id)
-                    .single();
+<div class="verified">
+✓ VERIFIED CERTIFICATE
+</div>
 
-                if (error) throw error;
-                if (!data) {
-                    errorMsg.classList.remove('hidden');
-                    return;
-                }
+<img id="studentPhoto" class="photo">
 
-                document.getElementById('studentName').innerText = data.student_name || "N/A"; 
-                document.getElementById('certIdDisplay').innerText = `ID: ${data.id}`;
-                document.getElementById('courseName').innerText = data.course_name || "N/A"; 
-                document.getElementById('grade').innerText = data.grade || "N/A"; 
+<h2 id="studentName"></h2>
 
-                if (data.photo_url) {
-                    studentPhoto.src = data.photo_url;
-                    studentPhoto.classList.remove('hidden');
-                }
-                resultCard.classList.remove('hidden');
-            } catch (err) {
-                console.error(err);
-                alert("Connection Error: Please check your internet or Supabase settings.");
-            }
-        }
-    </script>
+<p><strong>Certificate No:</strong> <span id="certNo"></span></p>
+
+<p><strong>Course:</strong> <span id="courseName"></span></p>
+
+<p><strong>Grade:</strong> <span id="grade"></span></p>
+
+<p><strong>Date of Issue:</strong> <span id="issueDate"></span></p>
+
+</div>
+
+</div>
+
+<script>
+
+const SUPABASE_URL = "YOUR_SUPABASE_URL";
+
+const SUPABASE_KEY = "YOUR_PUBLISHABLE_KEY";
+
+const supabaseClient =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+async function verifyCertificate(){
+
+const certId =
+document.getElementById("certId")
+.value
+.trim();
+
+const resultCard =
+document.getElementById("resultCard");
+
+const errorMsg =
+document.getElementById("errorMsg");
+
+resultCard.classList.add("hidden");
+errorMsg.classList.add("hidden");
+
+if(!certId){
+alert("Please enter certificate number");
+return;
+}
+
+const { data, error } =
+await supabaseClient
+.from("certificates")
+.select("*")
+.eq("id", certId)
+.single();
+
+if(error || !data){
+errorMsg.classList.remove("hidden");
+return;
+}
+
+document.getElementById("studentPhoto").src =
+data.photo_url || "";
+
+document.getElementById("studentName").innerText =
+data.student_name || "N/A";
+
+document.getElementById("certNo").innerText =
+data.id || "N/A";
+
+document.getElementById("courseName").innerText =
+data.course_name || "N/A";
+
+document.getElementById("grade").innerText =
+data.grade || "N/A";
+
+document.getElementById("issueDate").innerText =
+data.date_of_issue || "N/A";
+
+resultCard.classList.remove("hidden");
+
+}
+
+</script>
+
 </body>
 </html>

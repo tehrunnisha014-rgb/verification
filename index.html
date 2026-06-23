@@ -1,212 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Certificate Verification</title>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<style>
-body{
-font-family:Arial,sans-serif;
-background:#f4f4f4;
-margin:0;
-padding:20px;
-}
-
-.container{
-max-width:700px;
-margin:auto;
-background:white;
-padding:25px;
-border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,0.1);
-}
-
-h1{
-text-align:center;
-color:#003366;
-}
-
-input{
-width:100%;
-padding:12px;
-margin-top:10px;
-box-sizing:border-box;
-}
-
-button{
-width:100%;
-padding:12px;
-margin-top:10px;
-background:#003366;
-color:white;
-border:none;
-cursor:pointer;
-font-size:16px;
-}
-
-button:hover{
-background:#0055aa;
-}
-
-.hidden{
-display:none;
-}
-
-.card{
-margin-top:20px;
-padding:20px;
-border:1px solid #ddd;
-border-radius:10px;
-background:#fafafa;
-}
-
-.photo{
-width:120px;
-height:120px;
-object-fit:cover;
-border-radius:50%;
-display:block;
-margin:auto;
-margin-bottom:15px;
-}
-
-.verified{
-background:green;
-color:white;
-padding:10px;
-text-align:center;
-font-weight:bold;
-margin-bottom:15px;
-}
-
-.error{
-background:red;
-color:white;
-padding:10px;
-text-align:center;
-margin-top:15px;
-}
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-<h1>Asansol Institute of Engineering</h1>
-<h3 style="text-align:center;">Certificate Verification Portal</h3>
-
-<input
-type="text"
-id="certId"
-placeholder="Enter Certificate Number">
-
-<button onclick="verifyCertificate()">
-Verify Certificate
-</button>
-
-<div id="errorMsg" class="error hidden">
-Certificate not found.
-</div>
-
-<div id="resultCard" class="card hidden">
-
-<div class="verified">
-✓ VERIFIED CERTIFICATE
-</div>
-
-<img id="studentPhoto" class="photo">
-
-<h2 id="studentName"></h2>
-
-<p><strong>Certificate No:</strong> <span id="certNo"></span></p>
-
-<p><strong>Course:</strong> <span id="courseName"></span></p>
-
-<p><strong>Grade:</strong> <span id="grade"></span></p>
-
-<p><strong>Date of Issue:</strong> <span id="issueDate"></span></p>
-
-</div>
-
-</div>
-
 <script>
+const SUPABASE_URL = "PASTE_YOUR_PROJECT_URL_HERE";
+const SUPABASE_KEY = "PASTE_YOUR_PUBLISHABLE_KEY_HERE";
 
-const SUPABASE_URL = "YOUR_SUPABASE_URL";
-
-const SUPABASE_KEY = "YOUR_PUBLISHABLE_KEY";
-
-const supabaseClient =
-supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
 );
 
-async function verifyCertificate(){
+async function verifyCertificate() {
 
-const certId =
-document.getElementById("certId")
-.value
-.trim();
+  alert("Function started");
 
-const resultCard =
-document.getElementById("resultCard");
+  try {
 
-const errorMsg =
-document.getElementById("errorMsg");
+    const { data, error } = await supabaseClient
+      .from("certificates")
+      .select("*")
+      .eq("id", "AIE-2026-001")
+      .single();
 
-resultCard.classList.add("hidden");
-errorMsg.classList.add("hidden");
+    if (error) {
+      alert("Supabase Error: " + error.message);
+      return;
+    }
 
-if(!certId){
-alert("Please enter certificate number");
-return;
-}
+    alert("Found Student: " + data.student_name);
 
-const { data, error } =
-await supabaseClient
-.from("certificates")
-.select("*")
-.eq("id", certId)
-.single();
-
-if(error || !data){
-errorMsg.classList.remove("hidden");
-return;
-}
-
-document.getElementById("studentPhoto").src =
-data.photo_url || "";
-
-document.getElementById("studentName").innerText =
-data.student_name || "N/A";
-
-document.getElementById("certNo").innerText =
-data.id || "N/A";
-
-document.getElementById("courseName").innerText =
-data.course_name || "N/A";
-
-document.getElementById("grade").innerText =
-data.grade || "N/A";
-
-document.getElementById("issueDate").innerText =
-data.date_of_issue || "N/A";
-
-resultCard.classList.remove("hidden");
-
-}
-
-</script>
-
-</body>
-</html>
-<script>
-function verifyCertificate() {
-  alert("Button clicked");
+  } catch (err) {
+    alert("JavaScript Error: " + err.message);
+  }
 }
 </script>

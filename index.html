@@ -1,1 +1,94 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asansol Institute of Engineering - Certificate Verification</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col justify-between">
+
+    <header class="bg-white shadow-md border-t-4 border-red-500 py-6 text-center">
+        <div class="max-w-md mx-auto px-4 flex flex-col items-center gap-3">
+            <img src="1000298563.png" alt="Asansol Institute of Engineering Logo" class="h-28 w-auto object-contain">
+            <div>
+                <h1 class="text-xl font-black text-slate-800 tracking-wide uppercase">Asansol Institute of Engineering</h1>
+                <p class="text-xs font-bold text-blue-600 tracking-wider uppercase mt-1">Certificate Verification Portal</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-md w-full mx-auto p-6">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-6">
+            <label for="certId" class="block text-sm font-semibold text-slate-600 mb-2">Enter Certificate Number</label>
+            <div class="flex gap-2">
+                <input type="text" id="certId" placeholder="e.g., AIE-2026-001" class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 font-mono">
+                <button onclick="verifyCertificate()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-lg cursor-pointer transition-colors">Verify</button>
+            </div>
+            <p id="errorMsg" class="text-red-500 text-sm mt-3 hidden font-medium">⚠️ Certificate number not recognized.</p>
+        </div>
+
+        <div id="resultCard" class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hidden">
+            <div class="bg-red-500 px-6 py-4 text-white text-center font-bold tracking-wider text-sm">
+                ✓ VERIFIED OFFICIAL DOCUMENT
+            </div>
+            <div class="p-6 text-center">
+                <h2 id="studentName" class="text-2xl font-black text-slate-900 mb-1">---</h2>
+                <p id="certIdDisplay" class="text-xs font-mono bg-slate-100 text-slate-600 inline-block px-2 py-1 rounded font-bold mb-4">---</p>
+                <hr class="border-slate-100 my-4">
+                <div class="grid grid-cols-2 gap-4 text-left text-sm">
+                    <div>
+                        <span class="block text-slate-400 text-xs font-bold uppercase tracking-wider">Course / Stream</span>
+                        <span id="courseName" class="font-bold text-slate-800 text-base">---</span>
+                    </div>
+                    <div>
+                        <span class="block text-slate-400 text-xs font-bold uppercase tracking-wider">Grade / Div</span>
+                        <span id="grade" class="font-black text-blue-600 text-base">---</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-slate-900 py-4 text-center text-xs text-slate-400 border-t border-slate-800">
+        <p>© 2026 Asansol Institute of Engineering. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        const SUPABASE_URL = "https://ybbytbvbudasulkgbndmap.supabase.co"; 
+        const SUPABASE_KEY = "PASTE_YOUR_API_KEY_HERE"; // Put your sb_publis... key here
+
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        function verifyCertificate() {
+            const id = document.getElementById('certId').value.trim();
+            if(id) fetchData(id);
+        }
+
+        async function fetchData(id) {
+            document.getElementById('errorMsg').classList.add('hidden');
+            document.getElementById('resultCard').classList.add('hidden');
+
+            const { data, error } = await supabase
+                .from('certificates')
+                .select('*')
+                .eq('id', id)
+                .single();
+
+            if (error || !data) {
+                document.getElementById('errorMsg').classList.remove('hidden');
+                return;
+            }
+
+            document.getElementById('studentName').innerText = data.st || "N/A"; 
+            document.getElementById('certIdDisplay').innerText = `ID: ${data.id}`;
+            document.getElementById('courseName').innerText = data.co || "N/A"; 
+            document.getElementById('grade').innerText = data.gr || "N/A"; 
+
+            document.getElementById('resultCard').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

@@ -24,7 +24,8 @@
             <label for="certId" class="block text-sm font-semibold text-slate-600 mb-2">Enter Certificate Number</label>
             <div class="flex gap-2">
                 <input type="text" id="certId" placeholder="e.g., AIE-2026-001" class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 font-mono">
-                <button onclick="verifyCertificate()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-lg cursor-pointer transition-colors">Verify</button>
+                <button type="button" onclick="verifyCertificate()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-lg cursor-pointer transition-colors">Verify</button>
+                    
             </div>
             <p id="errorMsg" class="text-red-500 text-sm mt-3 hidden font-medium">⚠️ Certificate number not recognized.</p>
         </div>

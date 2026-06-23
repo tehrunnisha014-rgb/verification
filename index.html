@@ -11,7 +11,7 @@
 
     <header class="bg-white shadow-md border-t-4 border-red-500 py-6 text-center">
         <div class="max-w-md mx-auto px-4 flex flex-col items-center gap-3">
-            <img src="1000298563.png" alt="Asansol Institute of Engineering Logo" class="h-28 w-auto object-contain" onerror="this.src='file_00000000994c722fe63c150bb617ef1d.png'">
+            <img src="file_00000000994c722fe63c150bb617ef1d.png" alt="Asansol Institute of Engineering Logo" class="h-28 w-auto object-contain" onerror="this.src='1000298563.png'">
             <div>
                 <h1 class="text-xl font-black text-slate-800 tracking-wide uppercase">Asansol Institute of Engineering</h1>
                 <p class="text-xs font-bold text-blue-600 tracking-wider uppercase mt-1">Certificate Verification Portal</p>
@@ -34,9 +34,15 @@
                 ✓ VERIFIED OFFICIAL DOCUMENT
             </div>
             <div class="p-6 text-center">
+                <div class="mb-4 flex justify-center">
+                    <img id="studentPhoto" src="" alt="Student Photo" class="h-28 w-28 rounded-full object-cover border-4 border-slate-100 shadow-md hidden">
+                </div>
+
                 <h2 id="studentName" class="text-2xl font-black text-slate-900 mb-1">---</h2>
                 <p id="certIdDisplay" class="text-xs font-mono bg-slate-100 text-slate-600 inline-block px-2 py-1 rounded font-bold mb-4">---</p>
+                
                 <hr class="border-slate-100 my-4">
+                
                 <div class="grid grid-cols-2 gap-4 text-left text-sm">
                     <div>
                         <span class="block text-slate-400 text-xs font-bold uppercase tracking-wider">Course / Stream</span>
@@ -69,6 +75,7 @@
         async function fetchData(id) {
             document.getElementById('errorMsg').classList.add('hidden');
             document.getElementById('resultCard').classList.add('hidden');
+            document.getElementById('studentPhoto').classList.add('hidden');
 
             const { data, error } = await supabase
                 .from('certificates')
@@ -81,14 +88,20 @@
                 return;
             }
 
-            document.getElementById('studentName').innerText = data.st || "N/A"; 
+            document.getElementById('studentName').innerText = data.student_name || "N/A"; 
             document.getElementById('certIdDisplay').innerText = `ID: ${data.id}`;
-            document.getElementById('courseName').innerText = data.co || "N/A"; 
-            document.getElementById('grade').innerText = data.gr || "N/A"; 
+            document.getElementById('courseName').innerText = data.course_name || "N/A"; 
+            document.getElementById('grade').innerText = data.grade || "N/A"; 
+
+            // Renders the image if a valid URL is provided inside Supabase
+            if (data.photo_url) {
+                const imgElement = document.getElementById('studentPhoto');
+                imgElement.src = data.photo_url;
+                imgElement.classList.remove('hidden');
+            }
 
             document.getElementById('resultCard').classList.remove('hidden');
         }
     </script>
 </body>
 </html>
-
